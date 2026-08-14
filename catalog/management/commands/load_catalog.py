@@ -9,7 +9,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         Product.objects.all().delete()
         Category.objects.all().delete()
-        self.stdout.write("Продукты и категории удалены")
+        self.stdout.write("Категории и продукты удалены")
 
         self.stdout.write("Загрузка фикстур")
         call_command("loaddata", "catalog/fixtures/catalog_data.json")
