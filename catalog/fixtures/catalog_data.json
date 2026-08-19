@@ -1,0 +1,44 @@
+[
+    {
+        "model": "catalog.category",
+        "pk": 3,
+        "fields": {
+            "name": "Бетон",
+            "description": "Бетонные смеси для фундаментов"
+        }
+    },
+    {
+        "model": "catalog.category",
+        "pk": 4,
+        "fields": {
+            "name": "Плиты дорожные",
+            "description": "Плиты для временного дорожного покрытия"
+        }
+    },
+    {
+        "model": "catalog.product",
+        "pk": 5,
+        "fields": {
+            "name": "Бетон М300 на гравии",
+            "category": 3,
+            "description": "Для надежного фундамента",
+            "price": "7000.00",
+            "image": "static/images/beton_e1H1NyS.jpg",
+            "created_at": "2026-08-14T07:48:51.581Z",
+            "updated_at": "2026-08-14T07:48:51.581Z"
+        }
+    },
+    {
+        "model": "catalog.product",
+        "pk": 6,
+        "fields": {
+            "name": "Плита ПАГ-14 ГОСТ",
+            "category": 4,
+            "description": "Для аэродромных покрытий",
+            "price": "30000.00",
+            "image": "static/images/plitadorozhnaya_sLGwlst.jpg",
+            "created_at": "2026-08-14T07:50:59.494Z",
+            "updated_at": "2026-08-14T07:50:59.494Z"
+        }
+    }
+]
