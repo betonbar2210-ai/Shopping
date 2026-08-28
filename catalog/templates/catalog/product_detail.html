@@ -2,7 +2,7 @@
 {% load static %}
 {% load my_tags %}
 
-{% block title %}Главная{% endblock title %}
+{% block title %}{{ product.name }}{% endblock title %}
 
  {% block content %}
 
@@ -12,24 +12,18 @@
     <p class="lead">Вы находитесь на сайте, предназначенном для продажи товаров</p>
         <div class="container">
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-            {% for product in products  %}
             <div class="col">
               <div class="card shadow-sm h-100">
                 <div class="card-body d-flex flex-column">
                   <img src="{{ product.image | media_filter}}" class="img-fluid" alt="{{ product.name }}">
                   <h3 class="mb-2">{{ product.name }}</h3>
-                  {% if product.description %}
-                    <p class="card-text mb-auto">
-                    {{ product.description|truncatechars:100 }}
-                    </p>
-                  {% endif %}
+                  <p class="card-text mb-auto">{{ product.description }}</p>
                   <div class="mt-auto d-flex justify-content-center">
-                    <a href= "{% url 'catalog:product_detail' product.id %}" class="btn btn-primary">Смотреть</a>
+                    <a href="{% url 'catalog:index' %}" class="btn btn-sm btn-primary">Вернуться</a>
                   </div>
                 </div>
               </div>
             </div>
-            {% endfor %}
           </div>
         </div>
       </div>
