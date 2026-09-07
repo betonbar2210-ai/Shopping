@@ -1,0 +1,38 @@
+{% extends "blogs/base.html" %}
+{% load static %}
+
+{% block title %}Создание статьи{% endblock title %}
+
+<main class="col-md-10 p-0 bg-light">
+    {% block content %}
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-12 col-lg-8 offset-lg-2">
+                    <h2 class="fw-bold mb-4 text-primary">
+                        {% if object %}
+                            Изменить статью
+                        {% else %}
+                            Новая статья
+                        {% endif %}
+                    </h2>
+                    
+                    <form method="post" enctype="multipart/form-data" class="bg-white p-4 rounded shadow-sm">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        
+                        <div class="mt-4 d-flex flex-column flex-md-row gap-2">
+                            <button type="submit" class="btn btn-lg btn-primary w-100 w-md-auto">
+                                {% if object %}
+                                    Применить изменения
+                                {% else %}
+                                    Добавить статью
+                                {% endif %}
+                            </button>
+                            <a href="{% url 'blogs:blog_list' %}" class="btn btn-light w-100 w-md-auto">Отмена</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endblock content %}
+</main>
