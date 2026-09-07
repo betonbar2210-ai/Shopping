@@ -37,6 +37,7 @@ class Product(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True, help_text="дата создания")
     updated_at = models.DateTimeField(auto_now=True, help_text="дата обновления")
+    views_count = models.PositiveIntegerField(default=0)
 
     class Meta:
         ordering = ("name",)

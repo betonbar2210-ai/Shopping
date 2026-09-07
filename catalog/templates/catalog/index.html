@@ -10,6 +10,8 @@
     <div class="col p-4 bg-light text-center">
     <h1>Добро пожаловать в SkyproStore</h1>
     <p class="lead">Вы находитесь на сайте, предназначенном для продажи товаров</p>
+    <a href= "{% url 'catalog:product_create' %}" class="btn btn-primary">Cоздать товар</a>
+    <p></p><br/>
         <div class="container">
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             {% for product in products  %}
