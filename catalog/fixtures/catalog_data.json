@@ -23,7 +23,7 @@
             "category": 3,
             "description": "Для надежного фундамента",
             "price": "7000.00",
-            "image": "static/images/beton_e1H1NyS.jpg",
+            "image": "products/beton_RhpTkWf.jpg",
             "created_at": "2026-08-14T07:48:51.581Z",
             "updated_at": "2026-08-14T07:48:51.581Z"
         }
@@ -36,7 +36,7 @@
             "category": 4,
             "description": "Для аэродромных покрытий",
             "price": "30000.00",
-            "image": "static/images/plitadorozhnaya_sLGwlst.jpg",
+            "image": "products/plitadorozhnaya.jpg",
             "created_at": "2026-08-14T07:50:59.494Z",
             "updated_at": "2026-08-14T07:50:59.494Z"
         }

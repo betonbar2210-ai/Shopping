@@ -1,0 +1,23 @@
+{% extends 'catalog/basa.html' %}
+{% load static %}
+{% block title %}Удаление товара{%endblock title %}
+<main class="col-md-10 p-0">
+    {% block content %}
+        <div class="container text-center" style="max-width: 500px; margin: 0 auto;">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Удаление товара</h1>
+
+                    <form method="post" enctype="multipart/form-data" class="text-start">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="d-flex justify-content-center gap-2 mt-3">
+                            <button type="submit" class="btn btn-danger">Удалять</button>
+                            <a href="{% url 'catalog:index' %}" class="btn btn-primary">Вернуться</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    {% endblock content %}
+</main>

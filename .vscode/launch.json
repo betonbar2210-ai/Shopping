@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Отладчик Python: Django",
+            "name": "Django Runserver",
             "type": "debugpy",
             "request": "launch",
             "args": [

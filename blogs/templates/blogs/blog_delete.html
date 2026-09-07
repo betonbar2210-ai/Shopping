@@ -1,0 +1,58 @@
+{% extends "blogs/base.html" %}
+{% load static %}
+
+{% block title %}Удаление статьи: {{ blog.title }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12 col-md-8">
+            <div class="d-flex flex-wrap gap-2 mb-4">
+                <a href="{% url 'blogs:blog_detail' blog.pk %}" class="btn btn-outline-secondary">
+                    <svg class="bi me-1" width="1em" height="1em"><use xlink:href="#arrow-left"></use></svg>
+                    Назад к статье
+                </a>
+                <a href="{% url 'blogs:blog_list' %}" class="btn btn-outline-secondary">
+                    К списку статей
+                </a>
+            </div>
+
+            <div class="card border-danger border-start-4 bg-light p-4">
+                <h2 class="fw-bold text-danger mb-3">
+                    Вы уверены, что хотите удалить статью?
+                </h2>
+                <p class="mb-3">
+                    Статья «<strong>{{ blog.title }}</strong>» будет безвозвратно удалена.
+                    Это действие нельзя отменить.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        Да, удалить статью
+                    </button>
+                    <a href="{% url 'blogs:blog_detail' blog.pk %}" class="btn btn-outline-secondary ms-2">
+                        Отмена
+                    </a>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4 mt-4 mt-md-0">
+            {% if blog.preview_image %}
+                <div class="overflow-hidden rounded shadow-sm" style="aspect-ratio: 4/3;">
+                    <img src="{{ blog.preview_image.url }}"
+                         class="w-100 h-100 object-fit-cover"
+                         alt="{{ blog.title }}"
+                         loading="lazy">
+                </div>
+            {% else %}
+                <div class="bg-light rounded shadow-sm d-flex align-items-center justify-content-center h-100"
+                     style="aspect-ratio: 4/3;">
+                    Нет изображения
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
