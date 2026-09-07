@@ -1,0 +1,22 @@
+{% extends "blogs/base.html" %}
+{% load static %}
+
+{% block title %}Главная{% endblock title %}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            {% for blog in blogs %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <img src="{{ blog.preview_image.url }}" class="card-img-top" alt="{{ blog.title }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ blog.title }}</h5>
+                            <p class="card-text">{{ blog.content|truncatewords:50 }}</p>
+                            <a href="{% url 'blogs:blog_detail' blog.pk %}" class="btn btn-primary">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock content %}

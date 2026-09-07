@@ -1,0 +1,36 @@
+{% extends "blogs/base.html" %}
+{% load static %}
+
+{% block title %}{{ blog.title }}{% endblock title %}
+
+{% block content %}
+   <div class="container py-4">
+    <div class="row">
+        <div class="col-12 col-md-8">
+            <a href="{% url 'blogs:blog_list' %}" class="btn btn-outline-secondary mb-3">Вернуться</a>
+            <a href="{% url 'blogs:blog_update' blog.pk %}" class="btn btn-outline-primary mb-3">Редактировать</a>
+            <a href="{% url 'blogs:blog_delete' blog.pk%}" class="btn btn-outline-danger mb-3">Удалить</a>
+            <h1 class="fw-bold mb-3">{{ blog.title }}</h1>
+            {{ blog.content }}
+        </div>
+
+        <div class="col-12 col-md-4 mt-4 mt-md-0">
+            {% if blog.preview_image %}
+                <div class="overflow-hidden rounded shadow-sm" style="aspect-ratio: 4/3;">
+                    <img src="{{ blog.preview_image.url }}"
+                         class="w-100 h-100 object-fit-cover"
+                         alt="{{ blog.title }}"
+                         >
+                </div>
+            {% else %}
+                <div class="bg-light rounded shadow-sm d-flex align-items-center justify-content-center h-100"
+                     style="aspect-ratio: 4/3;">
+                    Нет изображения
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}

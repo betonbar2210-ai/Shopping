@@ -21,7 +21,7 @@ class ProductDetailView(DetailView):
     template_name = "catalog/product_detail.html"
     context_object_name = "product"
 
-    def get_object(self, queryset=None):  
+    def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
         self.object.views_count += 1
         self.object.save()
@@ -30,19 +30,22 @@ class ProductDetailView(DetailView):
 
 class ProductCreateView(CreateView):
     model = Product
-    fields = ['name', 'category', 'price', 'image', 'description']
+    fields = ["name", "category", "price", "image", "description"]
     template_name = "catalog/product_form.html"
-    success_url = reverse_lazy('catalog:index')
+    success_url = reverse_lazy("catalog:index")
 
 
 class ProductUpdateView(UpdateView):
     model = Product
-    fields = ['name', 'category', 'price', 'image', 'description']
+    fields = ["name", "category", "price", "image", "description"]
     template_name = "catalog/product_form.html"
-    success_url = reverse_lazy('catalog:index')
+    success_url = reverse_lazy("catalog:index")
+
+    def get_success_url(self):
+        return reverse_lazy("catalog:product_detail", kwargs={"pk": self.object.pk})
 
 
 class ProductDeleteView(DeleteView):
     model = Product
     template_name = "catalog/product_confirm_delete.html"
-    success_url = reverse_lazy('catalog:index')
+    success_url = reverse_lazy("catalog:index")
