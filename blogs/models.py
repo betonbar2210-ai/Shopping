@@ -14,9 +14,9 @@ class BlogPost(models.Model):
     )
 
     class Meta:
-            ordering = ("title")
-            verbose_name = "статья"
-            verbose_name_plural = "статьи"
+        ordering = ("title",)
+        verbose_name = "статья"
+        verbose_name_plural = "статьи"
 
     def __str__(self):
         return self.title
