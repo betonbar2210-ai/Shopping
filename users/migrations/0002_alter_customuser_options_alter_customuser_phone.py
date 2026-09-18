@@ -7,17 +7,22 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0001_initial'),
+        ("users", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='customuser',
-            options={'verbose_name': 'пользователь', 'verbose_name_plural': 'пользователи'},
+            name="customuser",
+            options={
+                "verbose_name": "пользователь",
+                "verbose_name_plural": "пользователи",
+            },
         ),
         migrations.AlterField(
-            model_name='customuser',
-            name='phone',
-            field=phonenumber_field.modelfields.PhoneNumberField(blank=True, max_length=128, null=True, region=None),
+            model_name="customuser",
+            name="phone",
+            field=phonenumber_field.modelfields.PhoneNumberField(
+                blank=True, max_length=128, null=True, region=None
+            ),
         ),
     ]
