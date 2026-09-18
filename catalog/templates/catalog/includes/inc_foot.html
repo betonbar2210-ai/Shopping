@@ -3,12 +3,26 @@
     <div class="dropdown">
         <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
         <img src="{% static 'images/face.jpg' %}" alt="" width="32" height="32" class="rounded-circle me-2">
-        <strong>Пользователь</strong>
+            {% if user.is_authenticated %}
+        <strong>{{ user.username }}</strong>
+            {% else %}
+            <strong>Вход в профиль</strong>
+            {% endif %}
         </a>
         <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-        <li><a class="dropdown-item" href="#">Профиль</a></li>
+            {% if user.is_authenticated %}
+            <li><a class="dropdown-item" href="#">Профиль</a></li>
+            <li>
+                <form action="{% url 'users:logout' %}" method="post" class="m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="dropdown-item">Выйти</button>
+                </form>
+            </li>
+            {% else %}
+            <li><a class="dropdown-item" href="{% url 'users:login' %}">Войти</a></li>
+            {% endif %}
         <li><hr class="dropdown-divider"></li>
-        <li><a class="dropdown-item" href="#">Выйти</a></li>
+
         </ul>
     </div>
 </div>
