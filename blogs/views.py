@@ -43,7 +43,7 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):
         return reverse_lazy("blogs:blog_detail", kwargs={"pk": self.object.pk})
 
 
-class BlogDeleteView(DeleteView):
+class BlogDeleteView(LoginRequiredMixin, DeleteView):
     model = BlogPost
     template_name = "blogs/blog_delete.html"
     context_object_name = "blog"

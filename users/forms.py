@@ -40,3 +40,14 @@ class UserRegistration(UserCreationForm):
         self.fields["country"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Страна"}
         )
+
+
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = CustomUser
+        fields = ("email", "username", "avatar", "phone", "country")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in ("email", "username", "avatar", "phone", "country"):
+            self.fields[field].widget.attrs.update({"class": "form-control"})

@@ -1,9 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.conf import settings
 from django.core.mail import send_mail
 from django.urls import reverse_lazy
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 
-from users.forms import UserRegistration
+from users.forms import UserProfileForm, UserRegistration
+from users.models import CustomUser
 
 
 class RegisterView(CreateView):
@@ -23,3 +25,13 @@ class RegisterView(CreateView):
             recipient_list=[form.cleaned_data["email"]],
         )
         return response
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+    model = CustomUser
+    form_class = UserProfileForm
+    template_name = "users/profile_form.html"
+    success_url = reverse_lazy("catalog:index")
+
+    def get_object(self, queryset=None) -> CustomUser:
+        return self.request.user
