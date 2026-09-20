@@ -12,7 +12,6 @@
 <body class="bg-light">
     <div class="container-fluid h-100 p-0">
         <div class="row m-0 h-100">
-            <!-- Сайдбар -->
             <div class="col-md-2 bg-dark text-white p-0 sidebar-wrapper">
                 <div class="sidebar-content d-flex flex-column h-100">
                     <div class="p-3">
@@ -32,8 +31,8 @@
                             </li>
 
                             <li>
-                                <a href="#" class="nav-link text-white">
-                                    <i class="bi bi-tag me-2"></i>Категории
+                                <a href="{% url 'blogs:blog_list' %}" class="nav-link text-white">
+                                    <i class="bi bi-tag me-2"></i>Статьи
                                 </a>
                             </li>
 

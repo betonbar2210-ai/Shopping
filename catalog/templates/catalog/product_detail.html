@@ -8,8 +8,6 @@
 
   <div class="container-fluid h-100 p-0">
     <div class="col p-4 bg-light text-center">
-    <h1>Добро пожаловать в SkyproStore</h1>
-    <p class="lead">Вы находитесь на сайте, предназначенном для продажи товаров</p>
         <div class="container">
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
             <div class="col">
@@ -20,8 +18,10 @@
                   <p class="card-text mb-auto">{{ product.description }}</p>
                   <div class="mt-auto d-flex justify-content-center gap-2">
                     <a href="{% url 'catalog:index' %}" class="btn btn-sm btn-primary">Вернуться</a>
+                      {% if user.is_authenticated %}
                     <a href="{% url 'catalog:product_update' object.pk %}" class="btn btn-sm btn-secondary">Редактировать</a>
                     <a href="{% url 'catalog:product_delete' object.pk %}" class="btn btn-sm btn-danger">Удалить</a>
+                      {% endif %}
                   </div>
                 </div>
               </div>
