@@ -18,9 +18,17 @@
                   <p class="card-text mb-auto">{{ product.description }}</p>
                   <div class="mt-auto d-flex justify-content-center gap-2">
                     <a href="{% url 'catalog:index' %}" class="btn btn-sm btn-primary">Вернуться</a>
-                      {% if user.is_authenticated %}
+                      {% if product.owner == request.user or perms.catalog.delete_product %}
                     <a href="{% url 'catalog:product_update' object.pk %}" class="btn btn-sm btn-secondary">Редактировать</a>
+                      {% endif %}
+                      {% if product.owner == request.user or perms.catalog.delete_product %}
                     <a href="{% url 'catalog:product_delete' object.pk %}" class="btn btn-sm btn-danger">Удалить</a>
+                      {% endif %}
+                      {% if perms.catalog.can_unpublish_product and product.is_published == 'published' %}
+                    <form action="{% url 'catalog:product_unpublish' object.pk %}" method="post" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-warning">Снять с публикации</button>
+                    </form>
                       {% endif %}
                   </div>
                 </div>
