@@ -3,15 +3,22 @@ from django.contrib.auth.mixins import (
     PermissionRequiredMixin,
     UserPassesTestMixin,
 )
+from django.core.cache import cache
+from django.db.models import F
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls import reverse, reverse_lazy
+from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.decorators.cache import cache_page
+from django.views.decorators.vary import vary_on_cookie
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic import DetailView, ListView, TemplateView
 
+from .cache_keys import PRODUCTS_CACHE_KEY
 from .forms import ProductForm
-from .models import Product
+from .models import Category, Product
+from .services import get_products_by_category
 
 
 class ContactsView(TemplateView):
@@ -24,9 +31,17 @@ class ProductListView(ListView):
     context_object_name = "products"
 
     def get_queryset(self):
-        return Product.objects.filter(is_published=Product.Status.PUBLISHED)
+        products = cache.get(PRODUCTS_CACHE_KEY)
+        if products is None:
+            products = list(
+                Product.objects.filter(is_published=Product.Status.PUBLISHED)
+            )
+            cache.set(PRODUCTS_CACHE_KEY, products, 60)
+        return products
 
 
+@method_decorator(cache_page(60), name="dispatch")
+@method_decorator(vary_on_cookie, name="dispatch")
 class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
     template_name = "catalog/product_detail.html"
@@ -34,9 +49,26 @@ class ProductDetailView(LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset=None):
         self.object = super().get_object(queryset)
+        Product.objects.filter(pk=self.object.pk).update(
+            views_count=F("views_count") + 1
+        )
         self.object.views_count += 1
-        self.object.save()
         return self.object
+
+
+class CategoryProductsView(ListView):
+    model = Product
+    template_name = "catalog/category_products.html"
+    context_object_name = "products"
+
+    def get_queryset(self):
+        category = get_object_or_404(Category, pk=self.kwargs["pk"])
+        return get_products_by_category(category)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["category"] = get_object_or_404(Category, pk=self.kwargs["pk"])
+        return context
 
 
 class OwnerOrModeratorMixin(UserPassesTestMixin):
