@@ -24,6 +24,9 @@
                 <div class="card-body d-flex flex-column">
                   <img src="{{ product.image | media_filter}}" class="img-fluid" alt="{{ product.name }}">
                   <h3 class="mb-2">{{ product.name }}</h3>
+                  <a href="{% url 'catalog:category_products' product.category.pk %}" class="text-muted small mb-2">
+                    {{ product.category.name }}
+                  </a>
                   {% if product.description %}
                     <p class="card-text mb-auto">
                     {{ product.description|truncatechars:100 }}

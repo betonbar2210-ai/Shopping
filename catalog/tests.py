@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
 from django.test import TestCase
 from django.urls import reverse
 
@@ -9,6 +10,7 @@ from users.models import CustomUser
 
 class ProductAccessTests(TestCase):
     def setUp(self) -> None:
+        cache.clear()
         category = Category.objects.create(name="Категория")
         self.owner = CustomUser.objects.create_user(
             email="owner@mail.ru", username="owner", password="TestPass123!"
@@ -101,9 +103,31 @@ class ProductAccessTests(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
+    def test_detail_buttons_hidden_for_non_owner(self) -> None:
+        stranger = CustomUser.objects.create_user(
+            email="stranger3@mail.ru", username="stranger3", password="TestPass123!"
+        )
+        url = reverse("catalog:product_detail", args=[self.product.pk])
+        self.client.force_login(self.owner)
+        self.client.get(url)
+        self.client.logout()
+        self.client.force_login(stranger)
+        response = self.client.get(url)
+        self.assertNotContains(response, "Редактировать")
+        self.assertNotContains(response, "Удалить")
+
+    def test_owner_sees_edit_button(self) -> None:
+        self.client.force_login(self.owner)
+        response = self.client.get(
+            reverse("catalog:product_detail", args=[self.product.pk])
+        )
+        self.assertContains(response, "Редактировать")
+        self.assertContains(response, "Удалить")
+
 
 class ModeratorTests(TestCase):
     def setUp(self) -> None:
+        cache.clear()
         category = Category.objects.create(name="Категория")
         self.owner = CustomUser.objects.create_user(
             email="owner@mail.ru", username="owner", password="TestPass123!"
@@ -172,3 +196,90 @@ class ModeratorTests(TestCase):
             f"{reverse('users:login')}?next="
             f"{reverse('catalog:product_unpublish', args=[self.product.pk])}",
         )
+
+
+class CategoryAndCacheTests(TestCase):
+    def setUp(self) -> None:
+        cache.clear()
+        self.category = Category.objects.create(name="Категория")
+        self.other_category = Category.objects.create(name="Другая")
+        self.user = CustomUser.objects.create_user(
+            email="user@mail.ru", username="user", password="TestPass123!"
+        )
+        self.product = Product.objects.create(
+            name="Товар",
+            category=self.category,
+            description="Описание",
+            price=100,
+            owner=self.user,
+            is_published=Product.Status.PUBLISHED,
+        )
+        self.other = Product.objects.create(
+            name="Другой",
+            category=self.other_category,
+            description="Описание",
+            price=200,
+            owner=self.user,
+            is_published=Product.Status.PUBLISHED,
+        )
+
+    def test_category_products_page_available(self) -> None:
+        url = reverse("catalog:category_products", args=[self.category.pk])
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(self.product, response.context["products"])
+        self.assertNotIn(self.other, response.context["products"])
+
+    def test_category_products_cached_by_category_key(self) -> None:
+        cache.clear()
+        url = reverse("catalog:category_products", args=[self.category.pk])
+        self.client.get(url)
+        cached = cache.get(f"category_{self.category.pk}")
+        self.assertIsNotNone(cached)
+        self.assertIn(self.product, cached)
+        self.assertNotIn(self.other, cached)
+
+    def test_category_cache_invalidated_on_save(self) -> None:
+        cache.clear()
+        url = reverse("catalog:category_products", args=[self.category.pk])
+        self.client.get(url)
+        self.assertIsNotNone(cache.get(f"category_{self.category.pk}"))
+        self.product.is_published = Product.Status.UNPUBLISHED
+        self.product.save()
+        self.assertIsNone(cache.get(f"category_{self.category.pk}"))
+
+    def test_category_products_page_skips_unpublished(self) -> None:
+        self.product.is_published = Product.Status.UNPUBLISHED
+        self.product.save()
+        url = reverse("catalog:category_products", args=[self.category.pk])
+        response = self.client.get(url)
+        self.assertNotIn(self.product, response.context["products"])
+
+    def test_products_list_is_cached(self) -> None:
+        cache.clear()
+        self.client.get(reverse("catalog:index"))
+        cached = cache.get("products_list")
+        self.assertIsNotNone(cached)
+        self.assertIn(self.product, cached)
+
+    def test_new_published_product_appears_on_main(self) -> None:
+        cache.clear()
+        self.client.get(reverse("catalog:index"))
+        new_product = Product.objects.create(
+            name="Свежий товар",
+            category=self.category,
+            description="Описание",
+            price=300,
+            owner=self.user,
+            is_published=Product.Status.PUBLISHED,
+        )
+        response = self.client.get(reverse("catalog:index"))
+        self.assertIn(new_product, response.context["products"])
+
+    def test_products_list_cache_invalidated_on_save(self) -> None:
+        cache.clear()
+        self.client.get(reverse("catalog:index"))
+        self.assertIsNotNone(cache.get("products_list"))
+        self.product.is_published = Product.Status.UNPUBLISHED
+        self.product.save()
+        self.assertIsNone(cache.get("products_list"))
